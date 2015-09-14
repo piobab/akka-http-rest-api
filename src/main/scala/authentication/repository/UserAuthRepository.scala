@@ -7,7 +7,7 @@ import scala.concurrent.{Future, ExecutionContext}
 /**
  * Created by piobab on 14.09.15.
  */
-class UserAuthRepository(db: Database)(implicit ec: ExecutionContext) {
+class UserAuthRepository(implicit db: Database, ec: ExecutionContext) {
 
   val usersAuthTQ = TableQuery[UsersAuth]
 
