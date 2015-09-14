@@ -22,6 +22,7 @@ libraryDependencies ++= {
     "com.typesafe.akka" %% "akka-http-spray-json-experimental" % akkaStreamV,
     "com.typesafe.slick" %% "slick" % slickV,
     "org.postgresql" % "postgresql" % postgresV,
-    "com.etaty.rediscala" %% "rediscala" % rediscalaV
+    "com.etaty.rediscala" %% "rediscala" % rediscalaV,
+    "joda-time" % "joda-time" % "2.8.2"
   )
 }
