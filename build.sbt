@@ -26,3 +26,11 @@ libraryDependencies ++= {
     "joda-time" % "joda-time" % "2.8.2"
   )
 }
+
+seq(flywaySettings: _*)
+
+flywayUrl := "jdbc:postgresql://localhost:5432/rest_api_app"
+
+flywayUser := "postgres"
+
+flywayPassword := "postgres"
