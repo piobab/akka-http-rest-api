@@ -1,19 +1,22 @@
 package core.router
 
 import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.server._
+import akka.http.scaladsl.server.Route
+import authentication.TokenAuthenticator
 import core.Config
 
 /**
  * Created by piobab on 13.09.15.
  */
-trait UserRouter {
+trait UserRouter extends TokenAuthenticator {
   this: Config =>
 
   val userRoutes: Route = {
-    path("users" / Segment) { userId =>
-      complete {
-        s"OK $userId"
+    pathPrefix("users") {
+      (get & pathPrefix("me") & pathEnd) {
+        authenticate(executor) { identity =>
+          complete("OK")
+        }
       }
     }
   }
