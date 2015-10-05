@@ -15,7 +15,7 @@ trait UserRouter extends TokenAuthenticator {
     pathPrefix("users") {
       (get & pathPrefix("me") & pathEnd) {
         authenticate(executor) { identity =>
-          complete("OK")
+          complete(s"OK, token: ${identity.authToken}")
         }
       }
     }
