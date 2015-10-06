@@ -12,7 +12,7 @@ import scala.concurrent.{Future, ExecutionContext}
 class UserAuthService(userAuthRepo: UserAuthRepository)(implicit ec: ExecutionContext) {
 
   def register(email: String, password: String): Future[Long] = {
-    val userAuthEntity = UserAuthEntity(0, DateTime.now().getMillis, email, password)
+    val userAuthEntity = UserAuthEntity(0, DateTime.now().getMillis, email, password, 0)
     userAuthRepo.insert(userAuthEntity).map(_.id)
   }
 }

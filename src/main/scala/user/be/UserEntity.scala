@@ -13,8 +13,7 @@ case class UserEntity(
                        gender: Option[Int],
                        streetAddress: Option[String],
                        postalCode: Option[String],
-                       postalCity: Option[String],
-                       userAuthId: Long
+                       postalCity: Option[String]
                        )
 
 class Users(tag: Tag) extends Table[UserEntity](tag, "user") {
@@ -33,8 +32,5 @@ class Users(tag: Tag) extends Table[UserEntity](tag, "user") {
 
   def postalCity: Rep[Option[String]] = column[Option[String]]("postal_city")
 
-  def userAuthId: Rep[Long] = column[Long]("user_auth_id")
-
-  def * : ProvenShape[UserEntity] = (id, firstName, lastName, gender, streetAddress, postalCode, postalCity,
-    userAuthId) <>(UserEntity.tupled, UserEntity.unapply)
+  def * : ProvenShape[UserEntity] = (id, firstName, lastName, gender, streetAddress, postalCode, postalCity) <>(UserEntity.tupled, UserEntity.unapply)
 }

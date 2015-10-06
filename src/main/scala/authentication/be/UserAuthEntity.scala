@@ -10,7 +10,8 @@ case class UserAuthEntity(
                            id: Long,
                            createdAt: Long,
                            email: String,
-                           password: String
+                           password: String,
+                           userId: Long
                            )
 
 class UsersAuth(tag: Tag) extends Table[UserAuthEntity](tag, "user_auth") {
@@ -23,5 +24,7 @@ class UsersAuth(tag: Tag) extends Table[UserAuthEntity](tag, "user_auth") {
 
   def password: Rep[String] = column[String]("password")
 
-  def * : ProvenShape[UserAuthEntity] = (id, createdAt, email, password) <> (UserAuthEntity.tupled, UserAuthEntity.unapply)
+  def userId: Rep[Long] = column[Long]("user_id")
+
+  def * : ProvenShape[UserAuthEntity] = (id, createdAt, email, password, userId) <>(UserAuthEntity.tupled, UserAuthEntity.unapply)
 }

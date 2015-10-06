@@ -11,7 +11,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class UserService(userRepo: UserRepository)(implicit ec: ExecutionContext) {
 
   def createDefaultUser(userAuthId: Long): Future[Long] = {
-    val userEntity = UserEntity(0, None, None, None, None, None, None, userAuthId)
+    val userEntity = UserEntity(0, None, None, None, None, None, None)
     userRepo.insert(userEntity).map(_.id)
   }
 }
