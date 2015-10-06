@@ -14,8 +14,8 @@ trait UserRouter extends TokenAuthenticator {
   val userRoutes: Route = {
     pathPrefix("users") {
       (get & pathPrefix("me") & pathEnd) {
-        authenticate(executor) { identity =>
-          complete(s"OK, token: ${identity.authToken}")
+        authenticate(executor, redis) { identity =>
+          complete(s"OK, token: ${identity.authToken}, id: ${identity.id}")
         }
       }
     }

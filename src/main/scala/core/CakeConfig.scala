@@ -15,12 +15,12 @@ object CakeConfig {
   lazy val dbPassword = config.getString("db.password")
 
   lazy val redisAuthHost = config.getString("redis.auth.host")
-  lazy val redisAuthPort = config.getInt("redis.auth,port")
+  lazy val redisAuthPort = config.getInt("redis.auth.port")
   lazy val redisAuthPassword = config.getString("redis.auth.password")
   lazy val redisAuthDb = config.getInt("redis.auth.db")
 
   lazy val redisCacheHost = config.getString("redis.cache.host")
-  lazy val redisCachePort = config.getInt("redis.cache,port")
+  lazy val redisCachePort = config.getInt("redis.cache.port")
   lazy val redisCachePassword = config.getString("redis.cache.password")
   lazy val redisCacheDb = config.getInt("redis.cache.db")
 }

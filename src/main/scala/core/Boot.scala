@@ -4,6 +4,7 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
 import core.router.ApiRouter
+import redis.RedisClient
 import slick.driver.PostgresDriver.api._
 
 /**
@@ -20,6 +21,12 @@ object Boot extends App with ApiRouter with Config {
   val dbUser = CakeConfig.dbUser
   val dbPassword = CakeConfig.dbPassword
   override implicit val db = Database.forURL(url = dbUrl, user = dbUser, password = dbPassword, driver = "org.postgresql.Driver")
+
+  val redisAuthHost = CakeConfig.redisAuthHost
+  val redisAuthPort = CakeConfig.redisAuthPort
+  val redisAuthPassword = CakeConfig.redisAuthPassword
+  val redisAuthDb = CakeConfig.redisAuthDb
+  override implicit val redis = RedisClient(host = redisAuthHost, port = redisAuthPort, password = Option(redisAuthPassword), db = Option(redisAuthDb))
 
   Http().bindAndHandle(apiRoutes, CakeConfig.interface, CakeConfig.port)
 }

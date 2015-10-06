@@ -2,6 +2,7 @@ package core
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
+import redis.RedisClient
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.ExecutionContext
@@ -15,4 +16,6 @@ trait Config {
   implicit val materializer: ActorMaterializer
 
   implicit def db: Database
+
+  implicit def redis: RedisClient
 }

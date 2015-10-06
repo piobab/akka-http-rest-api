@@ -3,6 +3,7 @@ package authentication
 import akka.http.scaladsl.model.headers.HttpChallenge
 import akka.http.scaladsl.server.{AuthenticationFailedRejection, Directive, RequestContext}
 import authentication.be.Identity
+import redis.RedisClient
 
 import scala.concurrent.ExecutionContext
 
@@ -13,12 +14,13 @@ trait TokenAuthenticator {
 
   val realm: String = "Private API"
 
-  def authenticate(implicit ec: ExecutionContext): Directive[Tuple1[Identity]] = Directive[Tuple1[Identity]] { inner => ctx =>
+  def authenticate(implicit ec: ExecutionContext, redisClient: RedisClient): Directive[Tuple1[Identity]] = Directive[Tuple1[Identity]] { inner => ctx =>
     getToken(ctx) match {
       case Some(token) =>
-        inner(Tuple1(Identity("id", token)))(ctx)
-        // Add rejection when no valid token
-        // AuthenticationFailedRejection(AuthenticationFailedRejection.CredentialsRejected, createChallenge(ctx))
+        redisClient.get(token).flatMap {
+          case Some(value) => inner(Tuple1(Identity(value.utf8String, token)))(ctx)
+          case None => ctx.reject(AuthenticationFailedRejection(AuthenticationFailedRejection.CredentialsRejected, createChallenge(ctx, Some("Invalid Auth-Token"))))
+        }
       case None =>
         ctx.reject(AuthenticationFailedRejection(AuthenticationFailedRejection.CredentialsMissing, createChallenge(ctx, Some("Missing Auth-Token"))))
     }
