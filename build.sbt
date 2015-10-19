@@ -23,7 +23,8 @@ libraryDependencies ++= {
     "com.typesafe.slick" %% "slick" % slickV,
     "org.postgresql" % "postgresql" % postgresV,
     "com.etaty.rediscala" %% "rediscala" % rediscalaV,
-    "joda-time" % "joda-time" % "2.8.2"
+    "joda-time" % "joda-time" % "2.8.2",
+    "org.mindrot" % "jbcrypt" % "0.3m"
   )
 }
 

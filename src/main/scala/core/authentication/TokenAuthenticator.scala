@@ -1,9 +1,10 @@
-package authentication
+package core.authentication
 
 import akka.http.scaladsl.model.headers.HttpChallenge
 import akka.http.scaladsl.server.{AuthenticationFailedRejection, Directive, RequestContext}
-import authentication.be.Identity
 import redis.RedisClient
+import user.User
+import core.authentication.UserSerializer._
 
 import scala.concurrent.ExecutionContext
 
@@ -17,8 +18,9 @@ trait TokenAuthenticator {
   def authenticate(implicit ec: ExecutionContext, redisClient: RedisClient): Directive[Tuple1[Identity]] = Directive[Tuple1[Identity]] { inner => ctx =>
     getToken(ctx) match {
       case Some(token) =>
-        redisClient.get(token).flatMap {
-          case Some(value) => inner(Tuple1(Identity(value.utf8String, token)))(ctx)
+        redisClient.get[User](token).flatMap {
+          case Some(value) =>
+            inner(Tuple1(Identity(token, value)))(ctx)
           case None => ctx.reject(AuthenticationFailedRejection(AuthenticationFailedRejection.CredentialsRejected, createChallenge(ctx, Some("Invalid Auth-Token"))))
         }
       case None =>
