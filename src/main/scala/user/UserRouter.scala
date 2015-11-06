@@ -5,14 +5,11 @@ import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import core.authorization.{WithPermissionRejections, Permission}
-import core.{ErrorWrapper, StatusWrapper, Config}
+import core.{ErrorWrapper, StatusWrapper, BaseRoute}
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import core.authentication.{Identity, TokenAuthenticator}
 
-/**
- * Created by piobab on 13.09.15.
- */
-trait UserRouter extends TokenAuthenticator with Permission with WithPermissionRejections with Config {
+trait UserRouter extends TokenAuthenticator with Permission with WithPermissionRejections with BaseRoute {
 
   import UserJsonProtocol._
   import core.CommonJsonProtocol._
@@ -22,9 +19,12 @@ trait UserRouter extends TokenAuthenticator with Permission with WithPermissionR
   val userRoutes: Route = {
     pathPrefix("users") {
       authenticate(executor, redis) { identity =>
-        (path("me") & pathEnd & get &) {
+        (path("me") & pathEnd & get) {
           complete {
-            StatusCodes.OK -> identity.user
+            userService.getUser(identity.user.id).map[ToResponseMarshallable] {
+              case Left(msg) => StatusCodes.NotFound -> ErrorWrapper("invalidData", msg)
+              case Right(user) => StatusCodes.OK -> user
+            }
           }
         } ~ (path("me") & pathEnd & put & entity(as[UserUpdateRequest])) { request =>
           complete {
@@ -45,24 +45,25 @@ trait UserRouter extends TokenAuthenticator with Permission with WithPermissionR
               case Right(user) => StatusCodes.OK -> user
             }
           }
-        } ~ (path(LongNumber) & pathEnd & delete & authorize(hasPermission(identity))) { id =>
+        } ~ (path(LongNumber) & pathEnd & delete & handleRejections(permissionRejectionHandlers) & authorize(hasPermission(identity))) { id =>
           complete {
             userService.deleteUser(id).map[ToResponseMarshallable] {
               case Left(msg) => StatusCodes.NotFound -> ErrorWrapper("invalidData", msg)
               case Right(_) => StatusCodes.OK -> StatusWrapper()
             }
           }
-        } ~ (path(LongNumber / "admin") & pathEnd & patch & entity(as[UserAdminUpdateRequest])) { (id, request) =>
-          complete {
-            userService.updateAdmin(id, request).map[ToResponseMarshallable] {
-              case Left(msg) => StatusCodes.NotFound -> ErrorWrapper("invalidData", msg)
-              case Right(_) => StatusCodes.OK -> StatusWrapper()
+        } ~ (path(LongNumber / "role") & pathEnd & patch & handleRejections(permissionRejectionHandlers) & authorize(hasPermission(identity)) & entity(as[UserRoleUpdateRequest])) {
+          (id, request) =>
+            complete {
+              userService.updateRole(id, identity, request).map[ToResponseMarshallable] {
+                case Left(msg) => StatusCodes.NotFound -> ErrorWrapper("invalidData", msg)
+                case Right(_) => StatusCodes.OK -> StatusWrapper()
+              }
             }
-          }
         }
       }
     }
   }
 
-  def hasPermission(identity: Identity): () => Boolean = () => identity.user.admin == 1
+  def hasPermission(identity: Identity): () => Boolean = () => identity.user.role == 1
 }

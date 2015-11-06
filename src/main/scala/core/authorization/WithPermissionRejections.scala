@@ -7,9 +7,6 @@ import core.ErrorWrapper
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import core.CommonJsonProtocol._
 
-/**
- * Created by piobab on 19.10.15.
- */
 case class PermissionRejection(message: String) extends Rejection
 
 trait WithPermissionRejections {

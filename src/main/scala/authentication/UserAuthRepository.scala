@@ -4,9 +4,6 @@ import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-/**
- * Created by piobab on 14.09.15.
- */
 class UserAuthRepository(implicit db: Database, ec: ExecutionContext) {
 
   val usersAuthTQ = TableQuery[UsersAuth]

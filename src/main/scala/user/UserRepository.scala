@@ -4,9 +4,6 @@ import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-/**
- * Created by piobab on 16.09.15.
- */
 class UserRepository(implicit db: Database, ec: ExecutionContext) {
 
   val usersTQ = TableQuery[Users]
@@ -26,12 +23,22 @@ class UserRepository(implicit db: Database, ec: ExecutionContext) {
     db.run(userWithId)
   }
 
-  def update(user: User): Future[Unit] = {
-    db.run(usersTQ.filter(_.id === user.id).update(user)).map(_ => ())
+  def update(id: Long,
+             firstName: String,
+             lastName: String,
+             gender: Int,
+             streetAddress: Option[String],
+             postalCode: Option[String],
+             postalCity: Option[String]): Future[Unit] = {
+    db.run(usersTQ
+      .filter(_.id === id)
+      .map(user => (user.firstName, user.lastName, user.gender, user.streetAddress, user.postalCode, user.postalCity))
+      .update(firstName, lastName, gender, streetAddress, postalCode, postalCity))
+      .map(_ => ())
   }
 
-  def update(id: Long, admin: Int): Future[Unit] = {
-    db.run(usersTQ.filter(_.id === id).map(u => u.admin).update(admin)).map(_ => ())
+  def update(id: Long, role: Int): Future[Unit] = {
+    db.run(usersTQ.filter(_.id === id).map(u => u.role).update(role)).map(_ => ())
   }
 
   def delete(id: Long): Future[Unit] = {

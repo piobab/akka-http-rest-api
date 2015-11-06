@@ -19,12 +19,16 @@ libraryDependencies ++= {
     "com.typesafe.akka" %% "akka-stream-experimental" % akkaStreamV,
     "com.typesafe.akka" %% "akka-http-core-experimental" % akkaStreamV,
     "com.typesafe.akka" %% "akka-http-experimental" % akkaStreamV,
+    "com.typesafe.akka" %% "akka-http-testkit-experimental" % akkaStreamV % "test",
     "com.typesafe.akka" %% "akka-http-spray-json-experimental" % akkaStreamV,
     "com.typesafe.slick" %% "slick" % slickV,
     "org.postgresql" % "postgresql" % postgresV,
     "com.etaty.rediscala" %% "rediscala" % rediscalaV,
     "joda-time" % "joda-time" % "2.8.2",
-    "org.mindrot" % "jbcrypt" % "0.3m"
+    "org.mindrot" % "jbcrypt" % "0.3m",
+    "org.flywaydb" % "flyway-core" % "3.2.1",
+    "org.scalatest" %% "scalatest" % "2.2.4" % "test",
+    "com.h2database" % "h2" % "1.4.190"
   )
 }
 

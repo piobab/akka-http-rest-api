@@ -1,21 +1,18 @@
 package core
 
 import akka.actor.ActorSystem
+import akka.event.LoggingAdapter
 import akka.stream.ActorMaterializer
 import redis.RedisClient
-import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.ExecutionContext
 
-/**
- * Created by piobab on 14.09.15.
- */
-trait Config {
+trait BaseRoute {
   implicit val actorSystem: ActorSystem
   implicit def executor: ExecutionContext
   implicit val materializer: ActorMaterializer
 
-  implicit def db: Database
+  val logger: LoggingAdapter
 
   implicit def redis: RedisClient
 }

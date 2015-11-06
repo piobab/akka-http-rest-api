@@ -3,9 +3,6 @@ package authentication
 import slick.driver.PostgresDriver.api._
 import slick.lifted.ProvenShape
 
-/**
- * Created by piobab on 14.09.15.
- */
 case class UserAuth(
                      id: Option[Long],
                      email: String,

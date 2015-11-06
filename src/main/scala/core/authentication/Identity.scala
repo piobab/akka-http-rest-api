@@ -1,8 +1,9 @@
 package core.authentication
 
-import user.User
+case class Identity(authToken: String, user: Identity.User)
 
-/**
- * Created by piobab on 01.10.15.
- */
-case class Identity(authToken: String, user: User)
+object Identity {
+
+  case class User(id: Long, role: Int)
+
+}
